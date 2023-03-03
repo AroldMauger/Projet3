@@ -1,88 +1,107 @@
 
-//AFFICHER LES PROJETS DYNAMIQUES // 
-async function recupererProjets (){
-  let reponse = await fetch("http://localhost:5678/api/works");
- 
-  if (reponse.status === 200) {
-    const work = await reponse.json();
-    console.log(work);
-
-    for(let i = 0; i < work.length; i++) {
-      let boxWork = work[i];
-          let sectionProjet = document.querySelector(".gallery");
-          let figureElement = document.createElement("figure")
-
-          let imageElement = document.createElement("img");
-          imageElement.src = work[i].imageUrl
-          imageElement.alt = work[i].title
-
-          let figureCaptionElement = document.createElement("figcaption")
-          figureCaptionElement.innerHTML = work[i].title;
-          
-          figureElement.appendChild(imageElement);
-          figureElement.appendChild(figureCaptionElement);
-          sectionProjet.appendChild(figureElement);
-      }
+//RÉCUPÉRER LES PROJETS // 
+ /*function genererProjets () { 
+  fetch("http://localhost:5678/api/works")
+  .then (reponse => reponse.json())
+  .then (work => {
+  afficherProjets (work) 
+  }) */
+  async function genererProjets() {
+    const reponse = await fetch("http://localhost:5678/api/works")
+    const projets = await reponse.json()
+  console.log(projets)
+  return projets 
   }
-};
+let dataProjets = await genererProjets()
 
-recupererProjets();
+  function afficherProjets(work) {
+    let galleryProjet = document.querySelector(".gallery");
+    galleryProjet.innerHTML = "";
+  
+    for (let i = 0; i < work.length; i++) {
+      let figureProjet = document.createElement("figure")
 
+      let imageProjet = document.createElement("img");
+      imageProjet.src = work[i].imageUrl;
+      imageProjet.alt = work[i].title;
 
-//FILTRER PAR CATÉGORIE // 
-async function filtrerProjets () {
-  const response = await fetch("http://localhost:5678/api/works");
-  const filtresProjets = await response.json();
+      let titreProjet = document.createElement("figcaption");
+      titreProjet.textContent = work[i].title;
 
-  function afficherFiltres(works) {
-    let sectionProjet = document.querySelector(".gallery");
-    sectionProjet.innerHTML = "";
-
-    for (let i = 0; i < works.length; i++) {
-      let boxWork = works[i];
-      const figureProjet = document.createElement("figure")
-
-      const imageProjet = document.createElement("img");
-      imageProjet.src = works[i].imageUrl;
-      imageProjet.alt = works[i].title;
-
-      const titreProjet = document.createElement("figcaption");
-      titreProjet.textContent = works[i].title;
-
+      galleryProjet.appendChild(figureProjet);  
       figureProjet.appendChild(imageProjet);
-      figureProjet.appendChild(titreProjet);
-      sectionProjet.appendChild(figureProjet);    }
-}
-const filterButtonObject = document.getElementById('filterObjets');
-    filterButtonObject.addEventListener('click', function() {
-      const ProjetFilteredObjects = filtresProjets.filter(works => works.categoryId == 1);
-      console.log(ProjetFilteredObjects);
-      afficherFiltres(ProjetFilteredObjects);
-    });
-  
-    const filterButtonAppartements = document.getElementById('filterAppartements');
-    filterButtonAppartements.addEventListener('click', function() {
-      const ProjetFilteredAppartements = filtresProjets.filter(works => works.categoryId == 2);
-      console.log(ProjetFilteredAppartements);
-      afficherFiltres(ProjetFilteredAppartements);
-    });
-  
-    const filterButtonHotels = document.getElementById('filterHotelsRestaurants');
-    filterButtonHotels.addEventListener('click', function() {
-      const ProjetFilteredHotels = filtresProjets.filter(works => works.categoryId == 3);
-      console.log(ProjetFilteredHotels);
-      afficherFiltres(ProjetFilteredHotels);
-    });
+      figureProjet.appendChild(titreProjet); 
 
-    const filterButtonTous = document.getElementById('filterTous');
-    filterButtonTous.addEventListener('click', function() {
-      afficherFiltres(filtresProjets);
-    });
-  
-    // AFFICHER TOUS LES PROJETS PAR DEFAUT //
-    afficherFiltres(filtresProjets);
+    }}
+    afficherProjets(dataProjets);
+
+
+async function recupererCategories() {
+  const reponse = await fetch("http://localhost:5678/api/categories")
+  const data = await reponse.json()
+  return data 
   }
-  
-  filtrerProjets();
+  let a = await recupererCategories()
+  console.log(a)
 
- 
+  function afficherCategories(parametres) {
+
+    for (let b of parametres) {
+      const ul = document.querySelector(".allFilters ul");
+      const liste = document.createElement('li')
+      liste.textContent = b.name
+      liste.setAttribute("id", b.id)
+      liste.classList.add("categorieAPI") 
+      ul.appendChild(liste)
+    }
+  
+  }
+afficherCategories(a)
+
+const allButton = document.getElementById('filterTous');
+allButton.addEventListener('click', function() {
+  afficherProjets(dataProjets);
+})
+
+const filterButtonObject = document.getElementById('1');
+filterButtonObject.addEventListener('click', function() {
+  const FilteredObjects = dataProjets.filter(a => a.categoryId == 1);
+  console.log(FilteredObjects);
+  afficherProjets(FilteredObjects);
+});
+const filterButtonAppartements = document.getElementById('2');
+filterButtonAppartements.addEventListener('click', function() {
+  const FilteredAppartements = dataProjets.filter(a => a.categoryId == 2);
+  console.log(FilteredAppartements);
+  afficherProjets(FilteredAppartements);
+});
+const filterButtonHotels = document.getElementById('3');
+filterButtonHotels.addEventListener('click', function() {
+  const FilteredHotels = dataProjets.filter(a => a.categoryId == 3);
+  console.log(FilteredHotels);
+  afficherProjets(FilteredHotels);
+});
+
+
+afficherProjets(dataProjets)
+
+
+/*
+
+const filterButtonTous = document.getElementById("filterTous");
+filterButtonTous.addEventListener('click', function() {
+  dataProjets.filter(a => a.categoryId == 3);
+});
+
+
+*/
+  
+   /* avec boucle for of créer un addEventListener
+    si les works ont les memes id que les categories, alors afficher
+
+    const filterButtonObject = document.('class des categories de l'API');
+    filterButtonObject.addEventListener('click', function() {
+      const FilteredObjects = dataProjets.filter(work => work.categoryId == 1);
+      afficherProjets(FilteredObjects);*/
+
+    
