@@ -85,23 +85,47 @@ filterButtonHotels.addEventListener('click', function() {
 
 afficherProjets(dataProjets)
 
+/* ON DÉFINIT LES CONSTANTES */
+const token = sessionStorage.getItem('token');  
+const boutonsModifier =  document.querySelectorAll(".boutonModifier");
+const logOut = document.getElementById("logout");
 
-/*
+/* Pour remplacer login par logout dans le header si le token est reconnu */
 
-const filterButtonTous = document.getElementById("filterTous");
-filterButtonTous.addEventListener('click', function() {
-  dataProjets.filter(a => a.categoryId == 3);
-});
+function logOutRemplaceLogIn () {
+    if (token) {
+        document.getElementById('logout').style.display = 'block';
+        document.getElementById('loginHeader').style.display = 'none';
+        document.querySelector('.allFilters').style.display = 'none';       
+    }
+}
+logOutRemplaceLogIn();
+
+/*Affichage du mode édition */
+
+function ModeEdition () {
+    if (token) {
+        document.getElementById('headerEdition').style.display = flex;
+        //affichage des bouttons modifier
+        for (let i of boutonsModifier) {
+        boutonsModifier.style.display = flex;
+        }
+        }
+};
+ModeEdition();
+
+/*Supprimer les données dans le Storage, faire apparaitre "login", faire disparaitre le mode édition */
+logOut.addEventListener("click",function (){
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userId');
+    logOut.style.display = 'none';
+    document.getElementById('loginHeader').style.display = 'block';
+    document.getElementById('headerEdition').style.display = 'none';
+    document.querySelector('.allFilters').style.display = 'flex';
+    for (let i of boutonsModifier) {
+        boutonsModifier.style.display ='none';
+    }
+})
 
 
-*/
-  
-   /* avec boucle for of créer un addEventListener
-    si les works ont les memes id que les categories, alors afficher
 
-    const filterButtonObject = document.('class des categories de l'API');
-    filterButtonObject.addEventListener('click', function() {
-      const FilteredObjects = dataProjets.filter(work => work.categoryId == 1);
-      afficherProjets(FilteredObjects);*/
-
-    
