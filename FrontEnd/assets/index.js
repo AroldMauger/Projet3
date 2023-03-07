@@ -105,16 +105,16 @@ logOutRemplaceLogIn();
 
 function ModeEdition () {
     if (token) {
-        document.getElementById('headerEdition').style.display = flex;
-        //affichage des bouttons modifier
-        for (let i of boutonsModifier) {
-        boutonsModifier.style.display = flex;
-        }
-        }
+        document.getElementById('headerEdition').style.display = '';
+        //affichage des boutons modifier
+        for (let i = 0; i < boutonsModifier.length; i++) {
+          boutonsModifier[i].style.display ='';
+      }
+  }
 };
 ModeEdition();
 
-/*Supprimer les données dans le Storage, faire apparaitre "login", faire disparaitre le mode édition */
+/*Supprimer les données dans le Storage, faire apparaitre "login", faire disparaitre le mode édition et les 3 boutons modifier */
 logOut.addEventListener("click",function (){
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userId');
@@ -122,10 +122,11 @@ logOut.addEventListener("click",function (){
     document.getElementById('loginHeader').style.display = 'block';
     document.getElementById('headerEdition').style.display = 'none';
     document.querySelector('.allFilters').style.display = 'flex';
-    for (let i of boutonsModifier) {
-        boutonsModifier.style.display ='none';
-    }
-})
+    for (let i = 0; i < boutonsModifier.length; i++) {
+      boutonsModifier[i].style.display ='none';
+  }
+}
+)
 
 
 

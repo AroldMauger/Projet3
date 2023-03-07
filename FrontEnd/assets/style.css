@@ -56,6 +56,7 @@ body {
 header {
 	display: flex;
 	justify-content: space-between;
+	flex-direction: column;
 }
 section {
 	margin: 50px 0
@@ -100,7 +101,7 @@ li:hover {
 #introduction {
 	display: flex;
 	align-items: center;
-	margin-bottom: 139px;
+	margin-bottom: 108px;
 }
 #introduction figure {
 	flex: 1
@@ -294,13 +295,14 @@ footer nav ul {
 }
 
 /* HEADER EN MODE EDITION */
-
+#headerStaticLogin{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-top: 50px;
+}
 #lienPagePrincipale {
 	text-decoration: none;
-}
-
-header {
-	margin-top: 50px;
 }
 
 #logout {
@@ -332,7 +334,7 @@ header {
 .boutonModifier3{
 	display: flex;
 	justify-content: center;
-	margin-bottom: 70px;
+	margin-bottom: 50px;
 }
 
 
@@ -351,13 +353,14 @@ header {
 }
 #headerEdition p {
 	color: #FFFFFF;
-	margin-right: 10px;
+	margin-right: 21px;
 	font-size: 16px;
 	font-weight: 100px;
 }
 
 #boutonPublierLesChangements{
-	font-family: 'Work' ;
+	font-family: 'Work Sans' ;
+	font-size : 14px;
 	color: black;
 	background-color: white;
 	border: 0;
@@ -366,4 +369,39 @@ header {
 	padding-top: 11px;
 	padding-bottom: 11px;
 	padding-right: 23px;
+
+}
+#headerStatic {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-top: 50px;
+}
+
+.allFilters {
+	justify-content: center;
+}
+/*LES 3 BOUTONS MODIFIER */
+.boutonModifier {
+	font-family: 'Work Sans';
+	font-size: 14px;
+}
+
+#photoSophieBluel {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	margin-left: 55px;
+}
+
+#introduction img {
+	margin : 0px;
+}
+.boutonModifier3 {
+	display: flex;
+	align-items: center;
+}
+#portfolio h2 {
+	margin : 0px;
+	margin-right: 31px;
 }
