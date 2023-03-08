@@ -59,12 +59,12 @@
 			<ul id="filters">
 				<li id="filterTous">Tous</li>
 			</ul>
-			
 		</nav>
 
 		<div class="gallery">
-
+		<!--PROJETS GÉNÉRÉS EN JS-->
 		</div>
+
 	</section>
 	<section id="contact">
 		<h2>Contact</h2>
@@ -79,6 +79,49 @@
 			<input type="submit" value="Envoyer">
 		</form>
 	</section>
+	<!--MODALE 1-->
+	<aside id="modal_gallery_photo" class="modal" style="display: none;">
+		<nav id="nav_modal1">
+			<i class="fa-solid fa-xmark closebutton_modal"></i>
+		</nav>
+		<div class="modal_wrapper">
+			<h3 id="titleModal">Galerie photo</h3>
+			<div class="miniatures_projets">
+				<!--Projets générés en JS dans modal.js-->
+			</div>
+			<button id="button_ajouter_photo" class="button_modal">Ajouter une photo</button>
+			<a id="button_supprimer_galerie">Supprimer la galerie</a>
+		</div>
+	</aside>
+	<!--MODALE 2-->
+	<aside id="modal_ajout_photo" class="modal" style="display: none;">
+		<nav id="nav_modal2">
+			<i class="fa-solid fa-arrow-left-long button_return"></i>
+			<i class="fa-solid fa-xmark closebutton_modal"></i>
+		</nav>
+		<div class="modal_wrapper_up">
+			<h3 id="titleModal">Ajout photo</h3>
+			<div class="zone_photo_vide">
+				<i class="fa-solid fa-image"></i>
+				<input class="upload_image" type="button" value="+ Ajouter photo" accept="image/*" required >
+				<p>jpg, png : 4mo max</p>
+			</div>
+		</div>
+			<div class="selecteurs_modal2">
+				<label for="title">Titre</label>
+				<input type="text" name="title" id="title" required>
+				<label for="category">Catégorie</label>
+				<select name="category" id="category" required>
+					<option value=""></option>
+					<option value="Objets">Objets</option>
+					<option value="Appartements">Appartements</option>
+					<option value="Hôtels & restaurants">Hôtels & restaurants</option>
+				</select>
+			</div>
+			<div class="button_valider">
+				<input type="submit" class="button_modal" value="Valider">
+			</div>
+	</aside>
 </main>
 
 <footer>
