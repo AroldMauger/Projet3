@@ -6,6 +6,8 @@ const buttonCloseModal= document.querySelectorAll('.closebutton_modal');
 const modal1_Gallery = document.querySelector('#modal_gallery_photo')
 const modal2_AjoutProjets = document.querySelector('#modal_ajout_photo')
 const miniatures_modal1 = document.querySelector('.miniatures_projets')
+const divIconeCorbeille = document.querySelectorAll('.div_icone_corbeille')
+
 
 
 /*OUVRIR LA MODALE 1 */
@@ -25,7 +27,10 @@ const openModal = function (e) {
     document.querySelectorAll('.open_modal').forEach(a => {
         a.addEventListener('click', openModal)
     })
-    
+
+    const stopPropagation = function (e) {
+        e.stopPropagation()
+    }
 
 /* CODE REPRIS DU FICHIER INDEX.JS POUR AFFICHER LES MINIATURES*/
 async function genererProjets() {
@@ -43,11 +48,14 @@ let dataProjets = await genererProjets()
   function afficherProjets(work) {
     let miniaturesProjet = document.querySelector(".miniatures_projets");
     miniaturesProjet.innerHTML = "";
-  
+
     for (let i = 0; i < work.length; i++) {
+     
+      const workIdentification = dataProjets.map(dataProjets => dataProjets.id)
+      let workId = workIdentification[i];
+
       let figureProjet = document.createElement("figure")
       figureProjet.className = "figure_miniature";
-
 
       let imageProjet = document.createElement("img");
       imageProjet.src = work[i].imageUrl;
@@ -57,24 +65,42 @@ let dataProjets = await genererProjets()
 
       let divIconeCorbeille = document.createElement("div");
       divIconeCorbeille.className = "div_icone_corbeille";
+      divIconeCorbeille.addEventListener('click', async function(e){
+        e.preventDefault();
+        figureProjet.remove();
+        await supprimerProjets(workId)
+      })
 
       let iconeCorbeille = document.createElement("i");
       iconeCorbeille.className = "fa-regular fa-trash-can icone_corbeille";
-
-
+     
       let titreProjet = document.createElement("figcaption");
       titreProjet.textContent = "éditer";
       titreProjet.className = "paragraphe_editer";
-
 
       miniaturesProjet.appendChild(figureProjet);  
       figureProjet.appendChild(imageProjet);
       figureProjet.appendChild(divIconeCorbeille);
       divIconeCorbeille.appendChild(iconeCorbeille);
       figureProjet.appendChild(titreProjet); 
+     
+      if (i === 0) {
 
-    }}
+        let divIconeAgrandir = document.createElement("div");
+        divIconeAgrandir.className = "div_icone_agrandir";
+
+        let iconeAgrandir = document.createElement("i");
+        iconeAgrandir.className = "fa-solid fa-up-down-left-right";
+
+        figureProjet.appendChild(divIconeAgrandir);
+        divIconeAgrandir.appendChild(iconeAgrandir);
+      }
+    }
+   
+}
     afficherProjets(dataProjets);
+
+// Ajouter l'icône de déplacement uniquement sur le premier élément
 
 
 /*OUVRIR LA MODALE 2 */
@@ -101,13 +127,13 @@ buttonOpenModal2.addEventListener("click", () => {
     modal2_AjoutProjets.removeAttribute('aria-model');
 })
 
-/* FERMER LES MODALES */
+/*FERMER LES MODALES */
     buttonCloseModal.forEach(buttonCloseModal => buttonCloseModal.addEventListener("click", (e) => {
     e.preventDefault(); 
-    closeModals()
+    closeModal()
 }));
 
-function closeModals() {
+function closeModal() {
     modal1_Gallery.style.display = 'none'; 
     modal2_AjoutProjets.style.display = 'none'; 
     modal1_Gallery.setAttribute('aria-hidden', 'true');
@@ -119,6 +145,33 @@ function closeModals() {
     
 window.addEventListener('keydown', function(e){ 
     if (e.key === "Escape" || e.key === "Esc") {
-        closeModals(e)
+        closeModal(e)
     }
-})
+}) 
+/* On ferme la modale 2 si on clique en dehors de la modale */
+window.addEventListener('click', function(e) {
+  if (e.target == modal2_AjoutProjets) {
+    modal2_AjoutProjets.style.display = "none";
+  }
+});
+
+/// supprimer un projet
+
+  async function supprimerProjets(workId) {
+    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ` +sessionStorage.getItem("token")
+        }
+    });
+    if (response.ok) {
+        console.log('Travail supprimé avec succès');
+
+    
+      
+    } else {
+        console.log('Impossible de supprimer le travail');
+    }
+
+}
