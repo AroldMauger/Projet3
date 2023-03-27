@@ -104,15 +104,18 @@
 				<i class="fa-solid fa-arrow-left-long button_return"></i>
 				<i class="fa-solid fa-xmark closebutton_modal"></i>
 			</nav>
-			<div class="modal_wrapper_up">
+			<form class="modal_wrapper_up" id="formModal2">
 				<h3 id="titleModal">Ajout photo</h3>
-				<div class="zone_photo_vide">
+				<div class="zone_photo_vide avant">
 					<i class="fa-solid fa-image"></i>
 					<label for="charger_image" class="upload_image">+ Ajouter photo</label>
-					<input id="charger_image"  type="file" accept="image/*" style="display: none" required >
+					<input id="charger_image"  type="file" accept="image/*" style="display: none" required>
 					<p>jpg, png : 4mo max</p>
 				</div>
-			</div>
+				<div class="apres" style="display: none;">
+							
+				</div>
+			</form>
 				<div class="selecteurs_modal2">
 					<label for="title">Titre</label>
 					<input type="text" name="title" id="title" required>
@@ -124,9 +127,9 @@
 						<option value="Hôtels & restaurants">Hôtels & restaurants</option>
 					</select>
 				</div>
-				<div class="button_valider">
-					<input type="submit" class="button_modal" value="Valider">
-				</div>
+				<form class="button_valider">
+					<input type="submit" class="button_modal" value="Valider" id="valider">
+				</form>
 		</div>
 	</aside>
 </main>

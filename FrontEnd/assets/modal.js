@@ -7,8 +7,19 @@ const modal1_Gallery = document.querySelector('#modal_gallery_photo')
 const modal2_AjoutProjets = document.querySelector('#modal_ajout_photo')
 const miniatures_modal1 = document.querySelector('.miniatures_projets')
 const divIconeCorbeille = document.querySelectorAll('.div_icone_corbeille')
+const formulaireImageAvant = document.querySelector(".avant");
+const formulaireImageApres = document.querySelector(".apres");
+const buttonSubmitProjet = document.querySelector("#valider");
+const titleForm = document.querySelector('#title');
+const categorieForm = document.querySelector('#category');
+const maxImageSize = 4 * 1024 * 1024; // 4 Mo en octets
 
-
+const categories = {
+  "": 0,
+  "Objets": 1,
+  "Appartements": 2,
+  "Hôtels & restaurants": 3
+};
 
 /*OUVRIR LA MODALE 1 */
 let modal = null
@@ -69,6 +80,7 @@ let dataProjets = await genererProjets()
         e.preventDefault();
         figureProjet.remove();
         await supprimerProjets(workId)
+        .then(() => {})
       })
 
       let iconeCorbeille = document.createElement("i");
@@ -83,6 +95,7 @@ let dataProjets = await genererProjets()
       figureProjet.appendChild(divIconeCorbeille);
       divIconeCorbeille.appendChild(iconeCorbeille);
       figureProjet.appendChild(titreProjet); 
+
      
       if (i === 0) {
 
@@ -100,7 +113,6 @@ let dataProjets = await genererProjets()
 }
     afficherProjets(dataProjets);
 
-// Ajouter l'icône de déplacement uniquement sur le premier élément
 
 
 /*OUVRIR LA MODALE 2 */
@@ -108,10 +120,10 @@ let dataProjets = await genererProjets()
 buttonOpenModal2.addEventListener("click", () => {
     modal1_Gallery.style.display = 'none';
     modal1_Gallery.setAttribute('aria-hidden', 'true');
-    modal1_Gallery.removeAttribute('aria-model');
+    modal1_Gallery.removeAttribute('aria-modal');
     modal2_AjoutProjets.style.display = 'flex';
     modal2_AjoutProjets.removeAttribute('aria-hidden');
-    modal2_AjoutProjets.setAttribute('aria-model', 'true');
+    modal2_AjoutProjets.setAttribute('aria-modal', 'true');
 
 });
 
@@ -120,11 +132,11 @@ buttonOpenModal2.addEventListener("click", () => {
     e.preventDefault(); 
     modal1_Gallery.style.display = 'flex';
     modal1_Gallery.removeAttribute('aria-hidden');
-    modal1_Gallery.setAttribute('aria-model', 'true');
+    modal1_Gallery.setAttribute('aria-modal', 'true');
     afficherProjets(dataProjets)
     modal2_AjoutProjets.style.display = 'none'; 
     modal2_AjoutProjets.setAttribute('aria-hidden', 'true');
-    modal2_AjoutProjets.removeAttribute('aria-model');
+    modal2_AjoutProjets.removeAttribute('aria-modal');
 })
 
 /*FERMER LES MODALES */
@@ -137,9 +149,9 @@ function closeModal() {
     modal1_Gallery.style.display = 'none'; 
     modal2_AjoutProjets.style.display = 'none'; 
     modal1_Gallery.setAttribute('aria-hidden', 'true');
-    modal1_Gallery.removeAttribute('aria-model');
+    modal1_Gallery.removeAttribute('aria-modal');
     modal2_AjoutProjets.setAttribute('aria-hidden', 'true');
-    modal2_AjoutProjets.removeAttribute('aria-model');
+    modal2_AjoutProjets.removeAttribute('aria-modal');
 }
   /*Fonction pour que la modale se ferme uniquement quand on clique sur la croix ou sur la touche ECHAP*/
     
@@ -155,23 +167,218 @@ window.addEventListener('click', function(e) {
   }
 });
 
-/// supprimer un projet
+/* Fonction DELETE pour supprimer un projet  */
 
-  async function supprimerProjets(workId) {
+ async function supprimerProjets(workId) {
     const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ` +sessionStorage.getItem("token")
-        }
+          }
     });
+
     if (response.ok) {
         console.log('Travail supprimé avec succès');
-
-    
-      
+        
     } else {
         console.log('Impossible de supprimer le travail');
     }
-
+  
 }
+
+ /* Supprimer le projet dynamiquement dans la page principale  */
+
+
+
+// --- Ajout d'un projet --- 
+const form = document.querySelector("#formModal2");
+const inputImage = document.getElementById("charger_image");
+let currentimage = null;
+
+inputImage.addEventListener("change",(event)=>{
+    currentimage = event.target.files[0];
+
+// ---  Remplacement de l'image dans le formulaire d'ajout ---
+if (currentimage != null) {
+    formulaireImageAvant.style.display ="none";
+    formulaireImageApres.style.display ="flex";
+    formulaireImageApres.innerHTML = '<img src="' + URL.createObjectURL(currentimage) +'" class= "imageFormulaireApres">';
+    verifValueFormSubmitProject()
+} else {
+    formulaireImageAvant.style.display ="flex";
+    formulaireImageApres.style.display ="none";
+    buttonSubmitProjet.style.backgroundColor = "#A7A7A7";
+}
+})
+
+// --- Changement d'état du boutton valider ---
+
+let valeurTitleForm = null;
+let valeurCategorieForm = null;
+
+titleForm.addEventListener("change",(event)=>{
+    valeurTitleForm = event.target.value;
+    verifValueFormSubmitProject()
+});
+categorieForm.addEventListener("change",(event)=>{
+    valeurCategorieForm = event.target.value;
+    verifValueFormSubmitProject()
+});
+
+function verifValueFormSubmitProject() {
+  if (valeurTitleForm && valeurCategorieForm && currentimage != null) {
+      buttonSubmitProjet.style.backgroundColor = "#1D6154";
+  }else{
+      buttonSubmitProjet.style.backgroundColor = "#A7A7A7";
+  }
+
+};
+
+/* Fonction pour fermer les modales  */
+
+function closeAllModals() {
+  modal1_Gallery.style.display = 'none'; 
+  modal2_AjoutProjets.style.display = 'none'; 
+  modal1_Gallery.setAttribute('aria-hidden', 'true');
+  modal1_Gallery.removeAttribute('aria-modal');
+  modal2_AjoutProjets.setAttribute('aria-hidden', 'true');
+  modal2_AjoutProjets.removeAttribute('aria-modal');
+};
+
+/* Ajouter un nouveau projet avec POST  */
+
+
+let addElem = document.querySelector("#valider");
+	addElem.addEventListener('click', function(event) {
+		event.preventDefault();
+    if ( valeurTitleForm === '' || valeurCategorieForm === '' || currentimage == null) {
+      alert("Données incomplètes. Veuillez remplir tout le formulaire.");
+    }
+    else {
+    closeAllModals();
+		const formData = new FormData();
+	
+    formData.append('image',currentimage);
+    formData.append('title',title.value);
+    formData.append('category',categories[category.value]);
+
+		fetch(`http://localhost:5678/api/works`, {
+			method: 'POST',
+      headers: {
+        'Authorization': `Bearer ` +sessionStorage.getItem("token"),
+        'accept': 'application/json',
+    },
+    body: formData
+		})
+		.then((response2)=>{
+      return response2.json();
+		})
+		.then((response2) => {
+			console.log(response2);
+
+/* Ajout du nouveau projet sur la page principale  */
+
+			let newFigureElem = document.createElement('figure')
+			newFigureElem.setAttribute('id', response2.id)
+			newFigureElem.classList.add(`work-item`);
+			newFigureElem.classList.add(`category-id-0`);
+			newFigureElem.classList.add(`category-id-${response2.categoryId}`);
+			document.getElementsByClassName('gallery')[0].appendChild(newFigureElem);
+
+
+			let newImgElem = document.createElement('img');
+			newFigureElem.appendChild(newImgElem);
+			newImgElem.setAttribute("src", response2.imageUrl);
+			newImgElem.setAttribute("crossorigin", "anonymous");
+
+			let newFigCaptionElement = document.createElement('figcaption');
+			newFigureElem.appendChild(newFigCaptionElement);
+			newFigCaptionElement.textContent = response2.title;
+
+})
+.catch(error => {
+  console.error('There was a problem adding element', error);
+
+});
+}});
+
+/* Ajout du nouveau projet dynamiquement dans la modale  */
+
+let addElemToModal = document.querySelector("#valider");
+addElemToModal.addEventListener('click', function(event) {
+		event.preventDefault();
+    if ( valeurTitleForm === '' || valeurCategorieForm === '' || currentimage == null) {
+      alert("Données incomplètes. Veuillez remplir tout le formulaire.");
+    }
+    else {
+    closeAllModals();
+		const formData = new FormData();
+	
+    formData.append('image',currentimage);
+    formData.append('title',title.value);
+    formData.append('category',categories[category.value]);
+
+		fetch(`http://localhost:5678/api/works`, {
+			method: 'POST',
+      headers: {
+        'Authorization': `Bearer ` +sessionStorage.getItem("token"),
+        'accept': 'application/json',
+    },
+    body: formData
+
+		})
+		.then((response2)=>{
+      return response2.json();
+		})
+		.then((response2) => {
+			console.log(response2);
+
+      document.querySelector('.miniatures_projets')
+
+/* Ajout du nouveau projet sur la page principale  */
+
+			let newFigureElem = document.createElement('figure')
+			newFigureElem.setAttribute('id', response2.id)
+			newFigureElem.classList.add(`work-item`);
+			newFigureElem.classList.add(`category-id-0`);
+			newFigureElem.classList.add(`category-id-${response2.categoryId}`);
+			document.getElementsByClassName('miniatures_projets')[0].appendChild(newFigureElem);
+
+
+			let newImgElem = document.createElement('img');
+			newImgElem.setAttribute("src", response2.imageUrl);
+			newImgElem.setAttribute("crossorigin", "anonymous");
+      newImgElem.style.width = "75px";
+      newImgElem.style.height = "100px";
+
+			let newFigCaptionElement = document.createElement('figcaption');
+      newFigCaptionElement.textContent = "éditer";
+      newFigCaptionElement.className = "new_paragraphe_editer";
+
+      let newDivIconeCorbeille = document.createElement("div");
+      newDivIconeCorbeille.className = "new_div_icone_corbeille";
+
+      newDivIconeCorbeille.addEventListener('click', async function(e){
+        e.preventDefault();
+        newFigureElem.remove();
+        await supprimerProjets(workId)
+        .then(() => {})
+      })
+
+      let newIconeCorbeille = document.createElement("i");
+      newIconeCorbeille.className = "fa-regular fa-trash-can icone_corbeille";
+
+      newFigureElem.appendChild(newImgElem);
+			newFigureElem.appendChild(newFigCaptionElement);
+      newFigureElem.appendChild(newDivIconeCorbeille);
+      newDivIconeCorbeille.appendChild(newIconeCorbeille);
+
+})
+.catch(error => {
+  console.error('There was a problem adding element', error);
+
+});
+}});
+
+
