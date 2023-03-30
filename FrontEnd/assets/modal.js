@@ -1,3 +1,6 @@
+import { afficherProjets} from "./index.js";
+
+
 /*ON DÉFINIT LES VARIABLES */
 const buttonOpenModal1 = document.querySelector('.open_modal');
 const buttonOpenModal2 = document.querySelector('.open-modal2');
@@ -56,7 +59,7 @@ let dataProjets = await genererProjets()
 
     /* On crée une fonction qui affiche figure/image/titre pour chaque projet */
 
-  function afficherProjets(work) {
+  function afficherProjetsModal(work) {
     let miniaturesProjet = document.querySelector(".miniatures_projets");
     miniaturesProjet.innerHTML = "";
 
@@ -78,9 +81,11 @@ let dataProjets = await genererProjets()
       divIconeCorbeille.className = "div_icone_corbeille";
       divIconeCorbeille.addEventListener('click', async function(e){
         e.preventDefault();
-        figureProjet.remove();
-        await supprimerProjets(workId)
-        .then(() => {})
+        figureProjet.remove();          /* permet de supprimer l'image dans la galerie modale */
+        await supprimerProjets(workId) /* permet de supprimer l'image dans la base de données avec l'API */
+        
+        const projet = document.getElementById(`projet${i+1}`);
+        projet.replaceWith();
       })
 
       let iconeCorbeille = document.createElement("i");
@@ -111,7 +116,7 @@ let dataProjets = await genererProjets()
     }
    
 }
-    afficherProjets(dataProjets);
+afficherProjetsModal(dataProjets);
 
 
 
@@ -137,12 +142,17 @@ buttonOpenModal2.addEventListener("click", () => {
     modal2_AjoutProjets.style.display = 'none'; 
     modal2_AjoutProjets.setAttribute('aria-hidden', 'true');
     modal2_AjoutProjets.removeAttribute('aria-modal');
+    formulaireImageAvant.style.display ="flex";
+    formulaireImageApres.style.display ="none";
 })
 
 /*FERMER LES MODALES */
     buttonCloseModal.forEach(buttonCloseModal => buttonCloseModal.addEventListener("click", (e) => {
     e.preventDefault(); 
     closeModal()
+    formulaireImageAvant.style.display ="flex";
+    formulaireImageApres.style.display ="none";
+
 }));
 
 function closeModal() {
@@ -164,6 +174,8 @@ window.addEventListener('keydown', function(e){
 window.addEventListener('click', function(e) {
   if (e.target == modal2_AjoutProjets) {
     modal2_AjoutProjets.style.display = "none";
+    formulaireImageAvant.style.display ="flex";
+    formulaireImageApres.style.display ="none";
   }
 });
 
@@ -180,21 +192,22 @@ window.addEventListener('click', function(e) {
 
     if (response.ok) {
         console.log('Travail supprimé avec succès');
-        
+        /*const figure_gallery = document.querySelector(".figure_gallery")  
+        figure_gallery.remove()   */
+
     } else {
         console.log('Impossible de supprimer le travail');
     }
   
 }
-
- /* Supprimer le projet dynamiquement dans la page principale  */
-
+ 
 
 
 // --- Ajout d'un projet --- 
 const form = document.querySelector("#formModal2");
 const inputImage = document.getElementById("charger_image");
 let currentimage = null;
+
 
 inputImage.addEventListener("change",(event)=>{
     currentimage = event.target.files[0];
@@ -227,7 +240,7 @@ categorieForm.addEventListener("change",(event)=>{
 });
 
 function verifValueFormSubmitProject() {
-  if (valeurTitleForm && valeurCategorieForm && currentimage != null) {
+  if (valeurTitleForm && valeurCategorieForm && currentimage != null) { 
       buttonSubmitProjet.style.backgroundColor = "#1D6154";
   }else{
       buttonSubmitProjet.style.backgroundColor = "#A7A7A7";
@@ -277,7 +290,7 @@ let addElem = document.querySelector("#valider");
 		.then((response2) => {
 			console.log(response2);
 
-/* Ajout du nouveau projet sur la page principale  */
+/* Ajout du nouveau projet sur la page principale et la modale  */
 
 			let newFigureElem = document.createElement('figure')
 			newFigureElem.setAttribute('id', response2.id)
@@ -286,97 +299,61 @@ let addElem = document.querySelector("#valider");
 			newFigureElem.classList.add(`category-id-${response2.categoryId}`);
 			document.getElementsByClassName('gallery')[0].appendChild(newFigureElem);
 
-
 			let newImgElem = document.createElement('img');
 			newFigureElem.appendChild(newImgElem);
 			newImgElem.setAttribute("src", response2.imageUrl);
 			newImgElem.setAttribute("crossorigin", "anonymous");
 
+
 			let newFigCaptionElement = document.createElement('figcaption');
 			newFigureElem.appendChild(newFigCaptionElement);
 			newFigCaptionElement.textContent = response2.title;
 
-})
-.catch(error => {
-  console.error('There was a problem adding element', error);
+      let newFigureElemModal = document.createElement('figure')
+      newFigureElemModal.setAttribute('id', response2.id)
+      newFigureElemModal.classList.add(`work-item`);
+      newFigureElemModal.classList.add(`category-id-0`);
+      newFigureElemModal.classList.add(`category-id-${response2.categoryId}`);
+      document.getElementsByClassName('miniatures_projets')[0].appendChild(newFigureElemModal);
+      
+      let newImgElemModal = document.createElement('img');
+      newImgElemModal.setAttribute("src", response2.imageUrl);
+      newImgElemModal.setAttribute("crossorigin", "anonymous");
+      newImgElemModal.style.width = "75px";
+      newImgElemModal.style.height = "100px";
+      
+      let newFigCaptionElementModal = document.createElement('figcaption');
+      newFigCaptionElementModal.textContent = "éditer";
+      newFigCaptionElementModal.className = "new_paragraphe_editer";
+      
+      let newDivIconeCorbeilleModal = document.createElement("div");
+      newDivIconeCorbeilleModal.className = "new_div_icone_corbeille";
+      
 
-});
-}});
-
-/* Ajout du nouveau projet dynamiquement dans la modale  */
-
-let addElemToModal = document.querySelector("#valider");
-addElemToModal.addEventListener('click', function(event) {
-		event.preventDefault();
-    if ( valeurTitleForm === '' || valeurCategorieForm === '' || currentimage == null) {
-      alert("Données incomplètes. Veuillez remplir tout le formulaire.");
-    }
-    else {
-    closeAllModals();
-		const formData = new FormData();
-	
-    formData.append('image',currentimage);
-    formData.append('title',title.value);
-    formData.append('category',categories[category.value]);
-
-		fetch(`http://localhost:5678/api/works`, {
-			method: 'POST',
-      headers: {
-        'Authorization': `Bearer ` +sessionStorage.getItem("token"),
-        'accept': 'application/json',
-    },
-    body: formData
-
-		})
-		.then((response2)=>{
-      return response2.json();
-		})
-		.then((response2) => {
-			console.log(response2);
-
-      document.querySelector('.miniatures_projets')
-
-/* Ajout du nouveau projet sur la page principale  */
-
-			let newFigureElem = document.createElement('figure')
-			newFigureElem.setAttribute('id', response2.id)
-			newFigureElem.classList.add(`work-item`);
-			newFigureElem.classList.add(`category-id-0`);
-			newFigureElem.classList.add(`category-id-${response2.categoryId}`);
-			document.getElementsByClassName('miniatures_projets')[0].appendChild(newFigureElem);
-
-
-			let newImgElem = document.createElement('img');
-			newImgElem.setAttribute("src", response2.imageUrl);
-			newImgElem.setAttribute("crossorigin", "anonymous");
-      newImgElem.style.width = "75px";
-      newImgElem.style.height = "100px";
-
-			let newFigCaptionElement = document.createElement('figcaption');
-      newFigCaptionElement.textContent = "éditer";
-      newFigCaptionElement.className = "new_paragraphe_editer";
-
-      let newDivIconeCorbeille = document.createElement("div");
-      newDivIconeCorbeille.className = "new_div_icone_corbeille";
-
-      newDivIconeCorbeille.addEventListener('click', async function(e){
+      newDivIconeCorbeilleModal.addEventListener('click', async function(e) {
         e.preventDefault();
-        newFigureElem.remove();
-        await supprimerProjets(workId)
-        .then(() => {})
+        newFigureElemModal.remove();
+        await supprimerProjets(newFigureElemModal)
+
+        const projet = document.getElementById(response2.id);
+        projet.remove(); /* ICI SONT LES PROBLEMES */
+          
       })
-
-      let newIconeCorbeille = document.createElement("i");
-      newIconeCorbeille.className = "fa-regular fa-trash-can icone_corbeille";
-
-      newFigureElem.appendChild(newImgElem);
-			newFigureElem.appendChild(newFigCaptionElement);
-      newFigureElem.appendChild(newDivIconeCorbeille);
-      newDivIconeCorbeille.appendChild(newIconeCorbeille);
-
+      
+      let newIconeCorbeilleModal = document.createElement("i");
+      newIconeCorbeilleModal.className = "fa-regular fa-trash-can icone_corbeille";
+      
+      newFigureElemModal.appendChild(newImgElemModal);
+      newFigureElemModal.appendChild(newFigCaptionElementModal);
+      newFigureElemModal.appendChild(newDivIconeCorbeilleModal);
+      newDivIconeCorbeilleModal.appendChild(newIconeCorbeilleModal);
+      
+      formulaireImageAvant.style.display ="flex";
+      formulaireImageApres.style.display ="none";
+      
 })
 .catch(error => {
-  console.error('There was a problem adding element', error);
+  console.error('Une erreur a été détectée', error);
 
 });
 }});

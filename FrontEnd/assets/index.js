@@ -1,25 +1,27 @@
 
-//RÉCUPÉRER LES PROJETS // 
- /*function genererProjets () { 
-  fetch("http://localhost:5678/api/works")
-  .then (reponse => reponse.json())
-  .then (work => {
-  afficherProjets (work) 
-  }) */
+
+  /* On génère les projets avec FETCH */
+
   async function genererProjets() {
     const reponse = await fetch("http://localhost:5678/api/works")
     const projets = await reponse.json()
   console.log(projets)
   return projets 
   }
+
+    /* On définit la variable dataProjets qui contient les travaux en JSON */
 let dataProjets = await genererProjets()
 
-  function afficherProjets(work) {
+    /* On crée une fonction qui affiche figure/image/titre pour chaque projet */
+
+    export function afficherProjets(work) {
     let galleryProjet = document.querySelector(".gallery");
     galleryProjet.innerHTML = "";
   
     for (let i = 0; i < work.length; i++) {
+
       let figureProjet = document.createElement("figure")
+      figureProjet.id = "projet"+[i+1];
 
       let imageProjet = document.createElement("img");
       imageProjet.src = work[i].imageUrl;
@@ -33,8 +35,13 @@ let dataProjets = await genererProjets()
       figureProjet.appendChild(titreProjet); 
 
     }}
+   
+
     afficherProjets(dataProjets);
 
+    
+
+  /* On génère les catégories avec FETCH */
 
 async function recupererCategories() {
   const reponse = await fetch("http://localhost:5678/api/categories")
@@ -43,6 +50,8 @@ async function recupererCategories() {
   }
   let a = await recupererCategories()
   console.log(a)
+
+  /* On crée une fonction qui affiche les catégories à partir du JSON */
 
   function afficherCategories(parametres) {
 
@@ -54,9 +63,10 @@ async function recupererCategories() {
       liste.classList.add("categorieAPI") 
       ul.appendChild(liste)
     }
-  
   }
 afficherCategories(a)
+
+  /* On définit ce qui doit être affiché en cliquant sur les catégories */
 
 const allButton = document.getElementById('filterTous');
 allButton.addEventListener('click', function() {
@@ -85,7 +95,7 @@ filterButtonHotels.addEventListener('click', function() {
 
 afficherProjets(dataProjets)
 
-/* ON DÉFINIT LES CONSTANTES */
+/* On définit les constantes */
 const token = sessionStorage.getItem('token');  
 const boutonsModifier =  document.querySelectorAll(".boutonModifier");
 const logOut = document.getElementById("logout");
@@ -127,6 +137,7 @@ logOut.addEventListener("click",function (){
   }
 }
 )
+
 
 
 
