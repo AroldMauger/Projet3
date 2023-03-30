@@ -1,6 +1,8 @@
-
+/* On définit ce qui doit se passer quand on remplit le formulaire de connexion*/
 document.formLogin.addEventListener('submit', async function (e) {
     e.preventDefault();
+    
+    /*On définit une constante "user" qui contient les champs email/password */
     const user = {
         email : document.getElementById("email").value,
         password : document.getElementById("password").value,
@@ -12,67 +14,24 @@ document.formLogin.addEventListener('submit', async function (e) {
     else if (password.value == ""){
     alert("veuillez entrer votre mot de passe") 
     }
+
+    /*Si l'email et le mot de passe correspondent à ceux de Sophie Bluel on permet la connexion */
     else{
 
-    const reponse = await fetch('http://localhost:5678/api/users/login', {
+    fetch('http://localhost:5678/api/users/login', {
         method: "POST",
         headers: { "Content-type": "application/json"},
         body: JSON.stringify(user)
-    });
-
-    const data = await reponse.json();
-
-    sessionStorage.setItem('userId',data.userId);
-    sessionStorage.setItem('token', data.token);
-
-    if (data.token) {
+    })
+    .then (reponse => reponse.json())
+    .then (reponse => {
+    sessionStorage.setItem('userId',reponse.userId);
+    sessionStorage.setItem('token', reponse.token);
+    if (reponse.token) {
         document.location.href="./index.html";
-    } else {
+    }
+    else {
         alert("Mot de passe et/ou identifiant incorrect");
     }
-}
-    
-});
-
-/* ON DÉFINIT LES CONSTANTES 
-const token = sessionStorage.getItem('token');  
-const boutonsModifier =  document.querySelectorAll(".boutonModifier");
-const logOut = document.getElementById("logout");
-
-/* Pour remplacer login par logout dans le header si le token est reconnu 
-
-function logOutRemplaceLogIn () {
-    if (token) {
-        document.getElementById('logout').style.display = 'block';
-        document.getElementById('loginHeader').style.display = 'none';
-        document.querySelector('.allFilters').style.display = 'none';       
-    }
-}
-logOutRemplaceLogIn();
-
-/*Affichage du mode édition 
-
-function ModeEdition () {
-    if (token) {
-        document.getElementById('headerEdition').style.display = flex;
-        //affichage des bouttons modifier
-        for (let i of boutonsModifier) {
-        boutonsModifier.style.display = flex;
-        }
-        }
-};
-ModeEdition();
-
-/*Supprimer les données dans le Storage, faire apparaitre "login", faire disparaitre le mode édition 
-logOut.addEventListener("click",function (){
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userId');
-    logOut.style.display = 'none';
-    document.getElementById('loginHeader').style.display = 'block';
-    document.getElementById('headerEdition').style.display = 'none';
-    document.querySelector('.allFilters').style.display = 'flex';
-    for (let i of boutonsModifier) {
-        boutonsModifier.style.display ='none';
-    }
 })
-*/
+}})
