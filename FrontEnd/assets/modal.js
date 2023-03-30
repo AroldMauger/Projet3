@@ -197,8 +197,8 @@ window.addEventListener('click', function(e) {
 
     } else {
         console.log('Impossible de supprimer le travail');
+        alert('Impossible de supprimer le travail')
     }
-  
 }
  
 
@@ -225,7 +225,7 @@ if (currentimage != null) {
 }
 })
 
-// --- Changement d'état du boutton valider ---
+// --- Changement de couleur du bouton valider ---
 
 let valeurTitleForm = null;
 let valeurCategorieForm = null;
@@ -261,7 +261,6 @@ function closeAllModals() {
 
 /* Ajouter un nouveau projet avec POST  */
 
-
 let addElem = document.querySelector("#valider");
 	addElem.addEventListener('click', function(event) {
 		event.preventDefault();
@@ -290,7 +289,7 @@ let addElem = document.querySelector("#valider");
 		.then((response2) => {
 			console.log(response2);
 
-/* Ajout du nouveau projet sur la page principale et la modale  */
+/* Ajout du nouveau projet sur la page principale  */
 
 			let newFigureElem = document.createElement('figure')
 			newFigureElem.setAttribute('id', response2.id)
@@ -308,6 +307,9 @@ let addElem = document.querySelector("#valider");
 			let newFigCaptionElement = document.createElement('figcaption');
 			newFigureElem.appendChild(newFigCaptionElement);
 			newFigCaptionElement.textContent = response2.title;
+
+/* Ajout du nouveau projet sur la modale  */
+
 
       let newFigureElemModal = document.createElement('figure')
       newFigureElemModal.setAttribute('id', response2.id)
@@ -329,14 +331,16 @@ let addElem = document.querySelector("#valider");
       let newDivIconeCorbeilleModal = document.createElement("div");
       newDivIconeCorbeilleModal.className = "new_div_icone_corbeille";
       
+/* Suppression des projets après le POST */
 
       newDivIconeCorbeilleModal.addEventListener('click', async function(e) {
         e.preventDefault();
         newFigureElemModal.remove();
-        await supprimerProjets(newFigureElemModal)
+        const workId = newFigureElemModal.getAttribute("id")
+        await supprimerProjets(workId)
 
         const projet = document.getElementById(response2.id);
-        projet.remove(); /* ICI SONT LES PROBLEMES */
+        projet.remove();
           
       })
       
@@ -354,7 +358,7 @@ let addElem = document.querySelector("#valider");
 })
 .catch(error => {
   console.error('Une erreur a été détectée', error);
-
+  alert("Une erreur a été détectée")
 });
 }});
 
