@@ -59,7 +59,7 @@ async function recupererCategories() {
       const ul = document.querySelector(".allFilters ul");
       const liste = document.createElement('li')
       liste.textContent = b.name
-      liste.setAttribute("id", b.id)
+      liste.setAttribute("id", b.id) 
       liste.classList.add("categorieAPI") 
       ul.appendChild(liste)
     }
@@ -111,7 +111,7 @@ function logOutRemplaceLogIn () {
 }
 logOutRemplaceLogIn();
 
-/*Affichage du mode édition */
+/*Affichage du mode édition, bandeau noir*/
 
 function ModeEdition () {
     if (token) {
@@ -124,7 +124,8 @@ function ModeEdition () {
 };
 ModeEdition();
 
-/*Supprimer les données dans le Storage, faire apparaitre "login", faire disparaitre le mode édition et les 3 boutons modifier */
+/*Supprimer les données dans le Storage, faire apparaitre "login", 
+faire disparaitre le mode édition et les 3 boutons modifier */
 logOut.addEventListener("click",function (){
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userId');

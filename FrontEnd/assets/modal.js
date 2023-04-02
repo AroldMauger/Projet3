@@ -2,20 +2,17 @@ import { afficherProjets} from "./index.js";
 
 
 /*ON DÉFINIT LES VARIABLES */
-const buttonOpenModal1 = document.querySelector('.open_modal');
+
 const buttonOpenModal2 = document.querySelector('.open-modal2');
 const buttonReturn = document.querySelector('.button_return');
 const buttonCloseModal= document.querySelectorAll('.closebutton_modal');
 const modal1_Gallery = document.querySelector('#modal_gallery_photo')
 const modal2_AjoutProjets = document.querySelector('#modal_ajout_photo')
-const miniatures_modal1 = document.querySelector('.miniatures_projets')
-const divIconeCorbeille = document.querySelectorAll('.div_icone_corbeille')
 const formulaireImageAvant = document.querySelector(".avant");
 const formulaireImageApres = document.querySelector(".apres");
 const buttonSubmitProjet = document.querySelector("#valider");
 const titleForm = document.querySelector('#title');
 const categorieForm = document.querySelector('#category');
-const maxImageSize = 4 * 1024 * 1024; // 4 Mo en octets
 
 const categories = {
   "": 0,
@@ -101,7 +98,7 @@ let dataProjets = await genererProjets()
       divIconeCorbeille.appendChild(iconeCorbeille);
       figureProjet.appendChild(titreProjet); 
 
-     
+     /* permet d'afficher l'icone d'agrandissement sur le premier projet */
       if (i === 0) {
 
         let divIconeAgrandir = document.createElement("div");
@@ -132,7 +129,7 @@ buttonOpenModal2.addEventListener("click", () => {
 
 });
 
-// --- RETOUR A LA MODALE 1 AVEC LA FLECHE ---
+/* RETOUR A LA MODALE 1 AVEC LA FLECHE */
     buttonReturn.addEventListener("click", (e) => {
     e.preventDefault(); 
     modal1_Gallery.style.display = 'flex';
@@ -192,27 +189,21 @@ window.addEventListener('click', function(e) {
 
     if (response.ok) {
         console.log('Travail supprimé avec succès');
-        /*const figure_gallery = document.querySelector(".figure_gallery")  
-        figure_gallery.remove()   */
 
     } else {
         console.log('Impossible de supprimer le travail');
         alert('Impossible de supprimer le travail')
     }
 }
- 
 
-
-// --- Ajout d'un projet --- 
-const form = document.querySelector("#formModal2");
+/* Ajout d'un projet */ 
 const inputImage = document.getElementById("charger_image");
 let currentimage = null;
-
 
 inputImage.addEventListener("change",(event)=>{
     currentimage = event.target.files[0];
 
-// ---  Remplacement de l'image dans le formulaire d'ajout ---
+/*  Remplacement de l'image dans le formulaire d'ajout */
 if (currentimage != null) {
     formulaireImageAvant.style.display ="none";
     formulaireImageApres.style.display ="flex";
@@ -225,7 +216,7 @@ if (currentimage != null) {
 }
 })
 
-// --- Changement de couleur du bouton valider ---
+/* Changement de couleur du bouton valider */
 
 let valeurTitleForm = null;
 let valeurCategorieForm = null;
